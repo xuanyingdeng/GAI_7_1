@@ -10,7 +10,7 @@
 
 #include "resource.h"		// 主符号
 #define DIYI 1
-
+#defien DIY2 2
 // CMy17_2_26App:
 // 有关此类的实现，请参阅 17_2_26.cpp
 //

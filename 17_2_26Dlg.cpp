@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CMy17_2_26Dlg, CDialogEx)
 	ON_WM_NCHITTEST()
 	ON_WM_SIZE()
 	ON_WM_SIZING()
+	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
 
@@ -98,7 +99,7 @@ HCURSOR CMy17_2_26Dlg::OnQueryDragIcon()
 LRESULT CMy17_2_26Dlg::OnNcHitTest(CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	
+
 	CPoint pt(point);
 	CRect rcClient;
 	GetClientRect(rcClient);
@@ -170,6 +171,7 @@ void CMy17_2_26Dlg::OnSize(UINT nType, int cx, int cy)
 
 void CMy17_2_26Dlg::OnSizing(UINT fwSide, LPRECT pRect)
 {
+	/*
 	if(pRect->right-pRect->left<= m_sizeClient.cx)
 	{
 		pRect->left = m_rcClent.left;
@@ -181,7 +183,34 @@ void CMy17_2_26Dlg::OnSizing(UINT fwSide, LPRECT pRect)
 		pRect->top = m_rcClent.top;
 		pRect->bottom = pRect->top+m_sizeClient.cy;
 	}
+	*/
 	CDialogEx::OnSizing(fwSide, pRect);
 	// TODO: 在此处添加消息处理程序代码
 	//x tianxiadiyi
+}
+
+/*
+	设置窗口最大最小能有多大
+*/
+void CMy17_2_26Dlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	MINMAXINFO *  p = lpMMI;
+	p->ptMinTrackSize.x = m_sizeClient.cx; //最小值width
+	p->ptMinTrackSize.y = m_sizeClient.cy; //最小值height
+
+	//在多屏的时候，需要区分有任务栏的屏和没任务栏的屏
+//	if (::MonitorFromWindow(NULL , MONITOR_DEFAULTTONEAREST) == 
+//	::MonitorFromWindow(m_hWnd , MONITOR_DEFAULTTONEAREST)) //判断窗口最近的屏幕是否是任务栏所在的主屏幕
+	{
+		p->ptMaxPosition.x = 0;
+		p->ptMaxPosition.y = 0;
+		//测试发现，窗口最大化时，不需要加上后边的两个size。
+		p-> ptMaxSize.x   =   GetSystemMetrics(SM_CXFULLSCREEN)   +   GetSystemMetrics(SM_CXDLGFRAME);
+		// + GetSystemMetrics(SM_CXBORDER)+ GetSystemMetrics(SM_CYBORDER); 
+		p-> ptMaxSize.y   =   GetSystemMetrics(SM_CYFULLSCREEN)   +   GetSystemMetrics(SM_CYCAPTION);
+		// + GetSystemMetrics(SM_CYDLGFRAME) + GetSystemMetrics(SM_CYBORDER);
+	}
+
+	CDialogEx::OnGetMinMaxInfo(lpMMI);
 }
